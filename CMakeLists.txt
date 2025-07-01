@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(HelloWorldSFML VERSION 0.0.1)
+project(HelloWorldSFML VERSION 0.0.2)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,7 +14,17 @@ if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan_toolchain.cmake")
 endif()
 include("${CMAKE_BINARY_DIR}/conan_toolchain.cmake")
 
-add_executable(${CMAKE_PROJECT_NAME} src/main.cpp)
+# -------------------------------------------------------------- #
+set(SRC 
+    src/core/src/app.cpp)
+
+add_executable(${CMAKE_PROJECT_NAME} 
+    src/main.cpp
+    ${SRC})
+
+target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
 
 # Just find SFML after executing Conan
 find_package(SFML REQUIRED COMPONENTS graphics window system)
