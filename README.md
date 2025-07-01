@@ -6,9 +6,9 @@ To build you need:
 - CMake (at least 3.24)
 - Enter this to terminal in project's root directory:
 
-'''
+```
 mkdir build && cd build
 conan install .. --output-folder=. --build=missing
 cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
 cmake --build . --config Release
-'''
+```
