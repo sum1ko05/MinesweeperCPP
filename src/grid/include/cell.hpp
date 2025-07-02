@@ -2,22 +2,28 @@
 #include <SFML/Graphics.hpp>
 #include "core/include/object.hpp"
 
-//Will be rewritten!!! No use now!!!
+//Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
 namespace mine_grid
 {
-    //Cell position is relative to grid
-    class Cell : private mine_core::SpriteObject
+    class Cell : public mine_core::SpriteObject
     {
     private:
+        //Cell position is relative to grid
         sf::Vector2i _grid_position;
 
         bool _is_opened;
         bool _has_mine;
     public:
-        Cell();
+        Cell(const sf::Vector2i &grid_position);
         ~Cell();
 
+        sf::Vector2i getGridPosition()
+        {
+            return _grid_position;
+        }
+
         unsigned short neighbor_mines();
+        void open_cell();
 
         void on_lmb_release();
     };

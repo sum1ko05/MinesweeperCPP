@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "object.hpp"
 
+//Namespace for all core features. It could be used for any application.
 namespace mine_core
 {
     class App
