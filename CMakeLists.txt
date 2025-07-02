@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(HelloWorldSFML VERSION 0.0.2)
+project(HelloWorldSFML VERSION 0.0.3)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -32,3 +32,5 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
     sfml-graphics
     sfml-window
     sfml-system)
+
+file(COPY assets/ DESTINATION ${CMAKE_BINARY_DIR}/assets)

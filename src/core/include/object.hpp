@@ -1,48 +1,25 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-//Will be rewritten!!! No use now!!!
+//Basically, it's a sprite with additional functionality
 namespace mine_core
 {
-    class DrawableObject
-    {
-    protected:
-        sf::Vector2f _position;
-        sf::Color _color;
-        bool _isVisible;
-
-    public:
-        DrawableObject(const sf::Vector2f& position, const sf::Color& color = sf::Color::White);
-
-        void setPosition(const sf::Vector2f& pos) { _position = pos; }
-        sf::Vector2f getPosition() const { return _position; }
-
-        virtual void draw(sf::RenderWindow& window){
-            if (!_isVisible) 
-                return;
-        }
-        virtual void update(float deltaTime){}
-    }
-
-    class SpriteObject : public DrawableObject
+    class SpriteObject : public sf::Sprite
     {
     private:
-        sf::Sprite _sprite;
+        //I need this field to make sure that assigned texture will stay with sprite
         sf::Texture _texture;
-
     public:
-        SpriteObject(const sf::Vector2f& position, const std::string& texturePath) : DrawableObject(position){
-            _texture.loadFromFile(texturePath);
-            _sprite.setTexture(_texture);
-            _sprite.setPosition(position);
+        //Don't redefine constructors and destructors, too dangerous
+        //SpriteObject();
+        //~SpriteObject();
+        void setTexture(const sf::Texture &texture, bool resetRect = false)
+        {
+            _texture = texture;
+            sf::Sprite::setTexture(_texture, resetRect);
         }
 
-        void setPosition(const sf::Vector2f& pos) { _position = pos; }
-        sf::Vector2f getPosition() const { return _position; }
-
-        void draw(sf::RenderWindow& window) override {
-            if (!_isVisible) return;
-                window.draw(_sprite);
-        }
-    }
+        virtual void handleEvent(sf::Event event, sf::RenderWindow &window){}
+        virtual void update(float deltaTime){}
+    };
 }

@@ -1,14 +1,31 @@
 #include "core/include/app.hpp"
 #include <SFML/Graphics.hpp>
+#include "core/include/object.hpp"
 
 namespace mine_core
 {
     App::App(): window(sf::VideoMode(640, 480), "Minesweeper CPP")
     {
+        
+    }
+
+    App::~App()
+    {
 
     }
 
     #pragma region run_functions
+
+    void App::ready()
+    {
+        sf::Vector2f pos(0, 0);
+        sf::Texture texture;
+        texture.loadFromFile("../assets/trollface.png");
+        std::unique_ptr<SpriteObject> trollface = std::make_unique<SpriteObject>();
+        trollface -> setTexture(texture);
+        trollface -> setPosition(pos);
+        objects.push_back(std::move(trollface));
+    }
 
     void App::handle_events()
     {
@@ -20,7 +37,7 @@ namespace mine_core
 
             // Passing event to all objects
             for (auto& obj : objects){
-                //obj->handleEvent(event, window);
+                obj->handleEvent(event, window);
             }
         }
     }
@@ -45,6 +62,7 @@ namespace mine_core
     
     void App::run()
     {
+        ready();
         while (window.isOpen()) {
             handle_events();
             update();
