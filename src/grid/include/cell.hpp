@@ -1,6 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "core/include/object.hpp"
+//#include "grid/include/grid.hpp"
+#define IR_SM IntRect_StateMachine
+#define ushort unsigned short
 
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
 namespace mine_grid
@@ -13,6 +16,16 @@ namespace mine_grid
 
         bool _is_opened;
         bool _has_mine;
+        bool _is_flagged;
+        bool _game_ended;
+
+    public:
+        ushort neighbor_mines;
+        SpriteObject* parent;
+
+    private:
+        sf::IntRect getTextureCut();
+        bool is_mouse_inside();
     public:
         Cell(const sf::Vector2i &grid_position);
         ~Cell();
@@ -22,9 +35,20 @@ namespace mine_grid
             return _grid_position;
         }
 
-        unsigned short neighbor_mines();
+        void reset_cell()
+        {
+            _is_opened = false;
+            _has_mine = false;
+            _is_flagged = false;
+            _game_ended = false;
+        }
+        bool get_mine();
+        void set_mine(bool has_mine);
+        void end_game();
         void open_cell();
+        void flag_cell();
 
-        void on_lmb_release();
+        void handleEvent(sf::Event event, sf::RenderWindow &window) override;
+        void render(sf::RenderWindow &window) override;
     };
 }

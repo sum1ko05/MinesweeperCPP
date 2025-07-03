@@ -18,14 +18,28 @@ namespace mine_grid
             {
                 sf::Vector2i new_pos(i, j);
                 std::unique_ptr<Cell> new_cell = std::make_unique<Cell>(new_pos);
+                new_cell -> parent = this;
                 column.push_back(std::move(new_cell));
             }
             _grid.push_back(std::move(column));
         }
+        _grid_height = gridHeight;
+        _grid_width = gridWidth;
     }
     Grid::~Grid()
     {
 
+    }
+
+    void Grid::reset_cells()
+    {
+        for(ushort i = 0; i < _grid.size(); i++)
+        {
+            for(ushort j = 0; j < _grid[i].size(); j++)
+            {
+                _grid[i][j] -> reset_cell();
+            }
+        }
     }
 
     void Grid::setTexture(const sf::Texture &texture, bool resetRect)
@@ -36,6 +50,137 @@ namespace mine_grid
             for(ushort j = 0; j < _grid[i].size(); j++)
             {
                 _grid[i][j] -> setTexture(_texture, resetRect);
+            }
+        }
+    }
+    void Grid::call_parent_func(std::string func, sf::Vector2i auto_open_arg)
+    {
+        if(func == "end_game") end_game();
+        if(func == "auto_open") auto_open(auto_open_arg.x, auto_open_arg.y);
+    }
+
+    ushort Grid::get_neighbor_mines(ushort mine_x, ushort mine_y)
+    {
+        ushort result = 0;
+        if(mine_x > 0 && mine_y > 0)
+        {
+            if(_grid[mine_x-1][mine_y-1] -> get_mine()) result++;
+        }
+        if(mine_y > 0)
+        {
+            if(_grid[mine_x][mine_y-1] -> get_mine()) result++;
+        }
+        if(mine_x < _grid_width-1 && mine_y > 0)
+        {
+            if(_grid[mine_x+1][mine_y-1] -> get_mine()) result++;
+        }
+        if(mine_x > 0)
+        {
+            if(_grid[mine_x-1][mine_y] -> get_mine()) result++;
+        }
+        if(mine_x < _grid_width-1)
+        {
+            if(_grid[mine_x+1][mine_y] -> get_mine()) result++;
+        }
+        if(mine_x > 0 && mine_y < _grid_height-1)
+        {
+            if(_grid[mine_x-1][mine_y+1] -> get_mine()) result++;
+        }
+        if(mine_y < _grid_height-1)
+        {
+            if(_grid[mine_x][mine_y+1] -> get_mine()) result++;
+        }
+        if(mine_x < _grid_width-1 && mine_y < _grid_height-1)
+        {
+            if(_grid[mine_x+1][mine_y+1] -> get_mine()) result++;
+        }
+        return result;
+    }
+
+    void Grid::game_setup(int mine_amount)
+    {
+        srand(time(0));
+        reset_cells();
+        for(int i = 0; i < mine_amount; i++)
+        {
+            while(true)
+            {
+                //Generate mine
+                ushort mine_x = rand() % _grid_width;
+                ushort mine_y = rand() % _grid_height;
+
+                if(_grid[mine_x][mine_y] -> get_mine()) continue;
+                else
+                {
+                    _grid[mine_x][mine_y] -> set_mine(true);
+                    break;
+                }
+            }
+        }
+        for(ushort i = 0; i < _grid.size(); i++)
+        {
+            for(ushort j = 0; j < _grid[i].size(); j++)
+            {
+                _grid[i][j] -> neighbor_mines = get_neighbor_mines(i,j);
+            }
+        }
+    }
+    void Grid::end_game()
+    {
+        for(ushort i = 0; i < _grid.size(); i++)
+        {
+            for(ushort j = 0; j < _grid[i].size(); j++)
+            {
+                _grid[i][j] -> end_game();
+            }
+        }
+    }
+    void Grid::auto_open(ushort cell_x, ushort cell_y)
+    {
+        if(cell_x > 0 && cell_y > 0)
+        {
+            _grid[cell_x-1][cell_y-1] -> open_cell();
+        }
+        if(cell_y > 0)
+        {
+            _grid[cell_x][cell_y-1] -> open_cell();
+        }
+        if(cell_x < _grid_width-1 && cell_y > 0)
+        {
+            _grid[cell_x+1][cell_y-1] -> open_cell();
+        }
+        if(cell_x > 0)
+        {
+            _grid[cell_x-1][cell_y] -> open_cell();
+        }
+        if(cell_x < _grid_width-1)
+        {
+            _grid[cell_x+1][cell_y] -> open_cell();
+        }
+        if(cell_x > 0 && cell_y < _grid_height-1)
+        {
+            _grid[cell_x-1][cell_y+1] -> open_cell();
+        }
+        if(cell_y < _grid_height-1)
+        {
+            _grid[cell_x][cell_y+1] -> open_cell();
+        }
+        if(cell_x < _grid_width-1 && cell_y < _grid_height-1)
+        {
+            _grid[cell_x+1][cell_y+1] -> open_cell();
+        }
+    }
+
+    void Grid::handleEvent(sf::Event event, sf::RenderWindow &window)
+    {
+        if(event.type == sf::Event::MouseButtonReleased || event.type == sf::Event::MouseButtonPressed)
+        {
+            for(ushort i = 0; i < _grid.size(); i++)
+            {
+                for(ushort j = 0; j < _grid[i].size(); j++)
+                {
+                    _grid[i][j] -> handleEvent(event, window);
+                }
             }
         }
     }

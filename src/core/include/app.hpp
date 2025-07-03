@@ -10,8 +10,11 @@ namespace mine_core
     private:
         sf::RenderWindow window;
         std::vector<std::unique_ptr<mine_core::SpriteObject>> objects;
+
+        unsigned int _screenWidth;
+        unsigned int _screenHeight;
     public:
-        App();
+        App(unsigned int screenWidth=640, unsigned int screenHeight=480);
         ~App();
         void run();
     private:

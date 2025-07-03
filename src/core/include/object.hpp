@@ -19,10 +19,10 @@ namespace mine_core
             _texture = texture;
             sf::Sprite::setTexture(_texture, resetRect);
         }
+        virtual void call_parent_func(std::string func, sf::Vector2i auto_open_arg = sf::Vector2i(0,0)){}
 
         virtual void handleEvent(sf::Event event, sf::RenderWindow &window){}
         virtual void update(float deltaTime){}
-        //Override if object is more complex than just sprite
         virtual void render(sf::RenderWindow &window)
         {
             window.draw(*this);

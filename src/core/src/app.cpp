@@ -3,13 +3,15 @@
 #include "core/include/object.hpp"
 #include "grid/include/grid.hpp"
 #include <iostream>
+#define cell_size 32
 
 //Namespace for all core features. It could be used for any application.
 namespace mine_core
 {
-    App::App(): window(sf::VideoMode(640, 480), "Minesweeper CPP")
+    App::App(unsigned int screenWidth, unsigned int screenHeight): window(sf::VideoMode(640, 480), "Minesweeper CPP")
     {
-        
+        _screenWidth = screenWidth;
+        _screenHeight = screenHeight;
     }
 
     App::~App()
@@ -21,6 +23,7 @@ namespace mine_core
 
     void App::ready()
     {
+        /*
         sf::Vector2f pos(50, 50);
         sf::Texture texture;
         texture.loadFromFile("../assets/trollface.png");
@@ -28,12 +31,19 @@ namespace mine_core
         trollface -> setTexture(texture);
         trollface -> setPosition(pos);
         objects.push_back(std::move(trollface));
-
+        */
+        sf::Vector2i grid_size(15,10);
         sf::Texture cell_texture;
-        cell_texture.loadFromFile("../assets/cell_test.png");
-        std::unique_ptr<mine_grid::Grid> grid = std::make_unique<mine_grid::Grid>(10,10);
+        cell_texture.loadFromFile("../assets/tiles.png");
+        std::unique_ptr<mine_grid::Grid> grid = std::make_unique<mine_grid::Grid>(grid_size.x,grid_size.y);
         grid -> setTexture(cell_texture);
+        //Centering the grid
+        sf::Vector2f screenCenter(_screenWidth / 2, _screenHeight / 2);
+        sf::Vector2f gridCenter((cell_size*grid_size.x)/2, (cell_size*grid_size.y)/2);
+        sf::Vector2f pos = screenCenter - gridCenter;
+
         grid -> setPosition(pos);
+        grid -> game_setup(25);
         objects.push_back(std::move(grid));
     }
 
