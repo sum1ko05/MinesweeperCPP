@@ -4,6 +4,7 @@
 #include "grid/include/tile_grid.hpp"
 #include "grid/include/mine_grid.hpp"
 #include "other/include/button.hpp"
+#include "other/include/emoji.hpp"
 #include <iostream>
 #define cell_size 32
 
@@ -39,7 +40,6 @@ namespace mine_core
         sf::Vector2f button_pos = resetSectionCenter - button_size;
         button -> setPosition(button_pos);
 
-        
         sf::Vector2i grid_size(15,10);
 
         sf::Texture border_texture;
@@ -58,12 +58,22 @@ namespace mine_core
         sf::Vector2f borderCenter((cell_size*(grid_size.x+2))/2, (cell_size*(grid_size.y+2))/2);
         sf::Vector2f gridPos = mainSectionCenter - gridCenter;
         sf::Vector2f borderPos = mainSectionCenter - borderCenter;
-        button -> parent = &**&grid;
+
+        sf::Texture emoji_texture;
+        emoji_texture.loadFromFile("../assets/tiles.png");
+        std::unique_ptr<mine_other::Emoji> emoji = std::make_unique<mine_other::Emoji>();
+        sf::Vector2f emoji_pos = button_pos + sf::Vector2f(4.f, 4.f);
+        emoji -> setTexture(emoji_texture);
+        emoji -> setPosition(emoji_pos);
+
+        button -> parent = grid.get();
+        grid -> emoji = emoji.get();
 
         border -> setPosition(borderPos);
         grid -> setPosition(gridPos);
         grid -> game_setup(25);
         objects.push_back(std::move(button));
+        objects.push_back(std::move(emoji));
         objects.push_back(std::move(border));
         objects.push_back(std::move(grid));
     }
@@ -85,7 +95,10 @@ namespace mine_core
 
     void App::update()
     {
-
+        for (auto& obj : objects){
+            //No clock needed yet
+            obj->update(0.f);
+        }
     }
 
     void App::render()

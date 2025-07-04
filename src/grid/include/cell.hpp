@@ -19,9 +19,10 @@ namespace mine_grid
         bool _is_flagged;
         bool _game_ended;
 
+        bool _is_holding = false;
     public:
         ushort neighbor_mines;
-        //SpriteObject* parent;
+        bool game_started;
 
     private:
         //
@@ -33,24 +34,20 @@ namespace mine_grid
         Cell(const sf::Vector2i &grid_position);
         ~Cell();
 
-        /*
-        sf::Vector2i getGridPosition()
-        {
-            return _grid_position;
-        }
-        */
-
         void reset_cell()
         {
             _is_opened = false;
             _has_mine = false;
             _is_flagged = false;
             _game_ended = false;
+            game_started = false;
         }
-        bool get_mine();
+        const bool get_mine();
+        const bool get_flag();
         void set_mine(bool has_mine);
         void end_game();
         void open_cell();
+        void manual_open_cell();
         void flag_cell();
 
         void handleEvent(sf::Event event, sf::RenderWindow &window) override;
