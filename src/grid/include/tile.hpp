@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "core/include/object.hpp"
 #define ushort unsigned short
+#define cell_size_f 32.f
 
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
 namespace mine_grid
@@ -12,17 +13,13 @@ namespace mine_grid
     private:
         //Cell position is relative to grid
         sf::Vector2i _grid_position;
-
-        //bool _is_opened;
-        //bool _has_mine;
-        //bool _is_flagged;
-        //bool _game_ended;
-
     public:
         //ushort neighbor_mines;
-
+        sf::Vector2i tileTexturePosition;
     protected:
-        virtual sf::IntRect getTextureCut(){return sf::IntRect(0,0,0,0);}
+        virtual sf::IntRect getTextureCut(){return sf::IntRect(tileTexturePosition.x*cell_size_f,
+                                                               tileTexturePosition.y*cell_size_f,
+                                                               cell_size_f, cell_size_f);}
         //bool is_mouse_inside();
     public:
         Tile(const sf::Vector2i &grid_position);
@@ -32,22 +29,7 @@ namespace mine_grid
         {
             return _grid_position;
         }
-
-        /*
-        void reset_cell()
-        {
-            _is_opened = false;
-            _has_mine = false;
-            _is_flagged = false;
-            _game_ended = false;
-        }
-        bool get_mine();
-        void set_mine(bool has_mine);
-        void end_game();
-        void open_cell();
-        void flag_cell();
-        */
-
+        
         //void handleEvent(sf::Event event, sf::RenderWindow &window) override;
         void render(sf::RenderWindow &window) override;
     };

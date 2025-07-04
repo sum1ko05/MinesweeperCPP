@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "core/include/object.hpp"
 #include "cell.hpp"
+#include "other/include/button.hpp"
 #define ushort unsigned short
 
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.

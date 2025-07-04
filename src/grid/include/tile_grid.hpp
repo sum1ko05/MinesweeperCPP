@@ -15,6 +15,7 @@ namespace mine_grid
         ushort _grid_width;
         ushort _grid_height;
 
+        sf::Vector2i setBorderState(ushort width, ushort height, ushort x, ushort y);
         //void reset_cells();
         //unsigned short get_neighbor_mines(ushort mine_x, ushort mine_y);
     public:

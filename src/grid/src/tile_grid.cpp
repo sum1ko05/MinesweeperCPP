@@ -3,7 +3,7 @@
 #include "core/include/object.hpp"
 #include "grid/include/tile.hpp"
 #define ushort unsigned short
-#define cell_size 32.f
+#define cell_size_f 32.f
 #include <iostream>
 
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
@@ -17,9 +17,10 @@ namespace mine_grid
             for(ushort j = 0; j < gridHeight; j++)
             {
                 sf::Vector2i new_pos(i, j);
-                std::unique_ptr<Tile> new_cell = std::make_unique<Tile>(new_pos);
-                new_cell -> parent = this;
-                column.push_back(std::move(new_cell));
+                std::unique_ptr<Tile> new_tile = std::make_unique<Tile>(new_pos);
+                new_tile -> parent = this;
+                new_tile -> tileTexturePosition = setBorderState(gridWidth, gridHeight, i, j);
+                column.push_back(std::move(new_tile));
             }
             _grid.push_back(std::move(column));
         }
@@ -30,18 +31,33 @@ namespace mine_grid
     {
 
     }
-    /*
-    void TileGrid::reset_cells()
+    sf::Vector2i TileGrid::setBorderState(ushort width, ushort height, ushort x, ushort y)
     {
-        for(ushort i = 0; i < _grid.size(); i++)
+        bool left = x==0 ? true : false;
+        bool right = x==width-1 ? true : false;
+        bool up = y==0 ? true : false;
+        bool down = y==height-1 ? true : false;
+
+        if(left)
         {
-            for(ushort j = 0; j < _grid[i].size(); j++)
-            {
-                _grid[i][j] -> reset_cell();
-            }
+            if(up) return sf::Vector2i(0, 0);
+            else if(down) return sf::Vector2i(0, 2);
+            else return sf::Vector2i(0, 1);
+        }
+        else if(right)
+        {
+            if(up) return sf::Vector2i(2, 0);
+            else if(down) return sf::Vector2i(2, 2);
+            else return sf::Vector2i(2, 1);
+        }
+        else
+        {
+            if(up) return sf::Vector2i(1, 0);
+            else if(down) return sf::Vector2i(1, 2);
+            else return sf::Vector2i(1, 1);
         }
     }
-    */
+    
     void TileGrid::setTexture(const sf::Texture &texture, bool resetRect)
     {
         _texture = texture;
@@ -53,139 +69,7 @@ namespace mine_grid
             }
         }
     }
-    /*
-    void TileGrid::call_parent_func(std::string func, sf::Vector2i auto_open_arg)
-    {
-        if(func == "end_game") end_game();
-        if(func == "auto_open") auto_open(auto_open_arg.x, auto_open_arg.y);
-    }
-
-    ushort TileGrid::get_neighbor_mines(ushort mine_x, ushort mine_y)
-    {
-        ushort result = 0;
-        if(mine_x > 0 && mine_y > 0)
-        {
-            if(_grid[mine_x-1][mine_y-1] -> get_mine()) result++;
-        }
-        if(mine_y > 0)
-        {
-            if(_grid[mine_x][mine_y-1] -> get_mine()) result++;
-        }
-        if(mine_x < _grid_width-1 && mine_y > 0)
-        {
-            if(_grid[mine_x+1][mine_y-1] -> get_mine()) result++;
-        }
-        if(mine_x > 0)
-        {
-            if(_grid[mine_x-1][mine_y] -> get_mine()) result++;
-        }
-        if(mine_x < _grid_width-1)
-        {
-            if(_grid[mine_x+1][mine_y] -> get_mine()) result++;
-        }
-        if(mine_x > 0 && mine_y < _grid_height-1)
-        {
-            if(_grid[mine_x-1][mine_y+1] -> get_mine()) result++;
-        }
-        if(mine_y < _grid_height-1)
-        {
-            if(_grid[mine_x][mine_y+1] -> get_mine()) result++;
-        }
-        if(mine_x < _grid_width-1 && mine_y < _grid_height-1)
-        {
-            if(_grid[mine_x+1][mine_y+1] -> get_mine()) result++;
-        }
-        return result;
-    }
-
-    void TileGrid::game_setup(int mine_amount)
-    {
-        srand(time(0));
-        reset_cells();
-        for(int i = 0; i < mine_amount; i++)
-        {
-            while(true)
-            {
-                //Generate mine
-                ushort mine_x = rand() % _grid_width;
-                ushort mine_y = rand() % _grid_height;
-
-                if(_grid[mine_x][mine_y] -> get_mine()) continue;
-                else
-                {
-                    _grid[mine_x][mine_y] -> set_mine(true);
-                    break;
-                }
-            }
-        }
-        for(ushort i = 0; i < _grid.size(); i++)
-        {
-            for(ushort j = 0; j < _grid[i].size(); j++)
-            {
-                _grid[i][j] -> neighbor_mines = get_neighbor_mines(i,j);
-            }
-        }
-    }
-    void TileGrid::end_game()
-    {
-        for(ushort i = 0; i < _grid.size(); i++)
-        {
-            for(ushort j = 0; j < _grid[i].size(); j++)
-            {
-                _grid[i][j] -> end_game();
-            }
-        }
-    }
-    void TileGrid::auto_open(ushort cell_x, ushort cell_y)
-    {
-        if(cell_x > 0 && cell_y > 0)
-        {
-            _grid[cell_x-1][cell_y-1] -> open_cell();
-        }
-        if(cell_y > 0)
-        {
-            _grid[cell_x][cell_y-1] -> open_cell();
-        }
-        if(cell_x < _grid_width-1 && cell_y > 0)
-        {
-            _grid[cell_x+1][cell_y-1] -> open_cell();
-        }
-        if(cell_x > 0)
-        {
-            _grid[cell_x-1][cell_y] -> open_cell();
-        }
-        if(cell_x < _grid_width-1)
-        {
-            _grid[cell_x+1][cell_y] -> open_cell();
-        }
-        if(cell_x > 0 && cell_y < _grid_height-1)
-        {
-            _grid[cell_x-1][cell_y+1] -> open_cell();
-        }
-        if(cell_y < _grid_height-1)
-        {
-            _grid[cell_x][cell_y+1] -> open_cell();
-        }
-        if(cell_x < _grid_width-1 && cell_y < _grid_height-1)
-        {
-            _grid[cell_x+1][cell_y+1] -> open_cell();
-        }
-    }
-
-    void TileGrid::handleEvent(sf::Event event, sf::RenderWindow &window)
-    {
-        if(event.type == sf::Event::MouseButtonReleased || event.type == sf::Event::MouseButtonPressed)
-        {
-            for(ushort i = 0; i < _grid.size(); i++)
-            {
-                for(ushort j = 0; j < _grid[i].size(); j++)
-                {
-                    _grid[i][j] -> handleEvent(event, window);
-                }
-            }
-        }
-    }
-    */
+    
     void TileGrid::render(sf::RenderWindow &window)
     {
         sf::Vector2f pivot = getPosition();
@@ -193,7 +77,7 @@ namespace mine_grid
         {
             for(ushort j = 0; j < _grid[i].size(); j++)
             {
-                sf::Vector2f cell_pos = pivot + (static_cast<sf::Vector2f>(_grid[i][j] -> getGridPosition()) * cell_size);
+                sf::Vector2f cell_pos = pivot + (static_cast<sf::Vector2f>(_grid[i][j] -> getGridPosition()) * cell_size_f);
                 _grid[i][j] -> setPosition(cell_pos);
                 _grid[i][j] -> render(window);
             }

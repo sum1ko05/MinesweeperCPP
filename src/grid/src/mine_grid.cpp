@@ -1,10 +1,10 @@
 #include "grid/include/mine_grid.hpp"
 #include <SFML/Graphics.hpp>
 #include "core/include/object.hpp"
-#include "grid/include/tile_grid.hpp"
+//#include "grid/include/tile_grid.hpp"
 #include "grid/include/cell.hpp"
 #define ushort unsigned short
-#define cell_size 32.f
+#define cell_size_f 32.f
 #include <iostream>
 
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
@@ -58,6 +58,7 @@ namespace mine_grid
     {
         if(func == "end_game") end_game();
         if(func == "auto_open") auto_open(auto_open_arg.x, auto_open_arg.y);
+        if(func == "reset_game") game_setup(25);
     }
 
     ushort MineGrid::get_neighbor_mines(ushort mine_x, ushort mine_y)
@@ -193,7 +194,7 @@ namespace mine_grid
         {
             for(ushort j = 0; j < _grid[i].size(); j++)
             {
-                sf::Vector2f cell_pos = pivot + (static_cast<sf::Vector2f>(_grid[i][j] -> getGridPosition()) * cell_size);
+                sf::Vector2f cell_pos = pivot + (static_cast<sf::Vector2f>(_grid[i][j] -> getGridPosition()) * cell_size_f);
                 _grid[i][j] -> setPosition(cell_pos);
                 _grid[i][j] -> render(window);
             }
