@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(HelloWorldSFML VERSION 0.0.5)
+project(HelloWorldSFML VERSION 0.0.5.1)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,8 +17,10 @@ include("${CMAKE_BINARY_DIR}/conan_toolchain.cmake")
 # -------------------------------------------------------------- #
 set(SRC 
     src/core/src/app.cpp
-    src/grid/src/grid.cpp
-    src/grid/src/cell.cpp)
+    src/grid/src/mine_grid.cpp
+    src/grid/src/cell.cpp
+    src/grid/src/tile_grid.cpp
+    src/grid/src/tile.cpp)
 
 add_executable(${CMAKE_PROJECT_NAME} 
     src/main.cpp

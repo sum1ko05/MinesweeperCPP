@@ -1,7 +1,7 @@
 #include "core/include/app.hpp"
 #include <SFML/Graphics.hpp>
 #include "core/include/object.hpp"
-#include "grid/include/grid.hpp"
+#include "grid/include/mine_grid.hpp"
 #include <iostream>
 #define cell_size 32
 
@@ -23,19 +23,10 @@ namespace mine_core
 
     void App::ready()
     {
-        /*
-        sf::Vector2f pos(50, 50);
-        sf::Texture texture;
-        texture.loadFromFile("../assets/trollface.png");
-        std::unique_ptr<SpriteObject> trollface = std::make_unique<SpriteObject>();
-        trollface -> setTexture(texture);
-        trollface -> setPosition(pos);
-        objects.push_back(std::move(trollface));
-        */
         sf::Vector2i grid_size(15,10);
         sf::Texture cell_texture;
         cell_texture.loadFromFile("../assets/tiles.png");
-        std::unique_ptr<mine_grid::Grid> grid = std::make_unique<mine_grid::Grid>(grid_size.x,grid_size.y);
+        std::unique_ptr<mine_grid::MineGrid> grid = std::make_unique<mine_grid::MineGrid>(grid_size.x,grid_size.y);
         grid -> setTexture(cell_texture);
         //Centering the grid
         sf::Vector2f screenCenter(_screenWidth / 2, _screenHeight / 2);

@@ -1,45 +1,39 @@
 #pragma once
+#include <vector>
 #include <SFML/Graphics.hpp>
 #include "core/include/object.hpp"
-#include "grid/include/tile.hpp"
-#define IR_SM IntRect_StateMachine
 #define ushort unsigned short
 
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
 namespace mine_grid
 {
-    class Cell : public Tile//mine_core::SpriteObject
+    class Tile : public mine_core::SpriteObject
     {
     private:
         //Cell position is relative to grid
-        //sf::Vector2i _grid_position;
+        sf::Vector2i _grid_position;
 
-        bool _is_opened;
-        bool _has_mine;
-        bool _is_flagged;
-        bool _game_ended;
+        //bool _is_opened;
+        //bool _has_mine;
+        //bool _is_flagged;
+        //bool _game_ended;
 
     public:
-        ushort neighbor_mines;
-        //SpriteObject* parent;
+        //ushort neighbor_mines;
 
-    private:
-        //
-        bool is_mouse_inside();
     protected:
-        sf::IntRect getTextureCut() override;
-
+        virtual sf::IntRect getTextureCut(){return sf::IntRect(0,0,0,0);}
+        //bool is_mouse_inside();
     public:
-        Cell(const sf::Vector2i &grid_position);
-        ~Cell();
+        Tile(const sf::Vector2i &grid_position);
+        ~Tile();
 
-        /*
-        sf::Vector2i getGridPosition()
+        const sf::Vector2i& getGridPosition()
         {
             return _grid_position;
         }
-        */
 
+        /*
         void reset_cell()
         {
             _is_opened = false;
@@ -52,8 +46,9 @@ namespace mine_grid
         void end_game();
         void open_cell();
         void flag_cell();
+        */
 
-        void handleEvent(sf::Event event, sf::RenderWindow &window) override;
-        //void render(sf::RenderWindow &window) override;
+        //void handleEvent(sf::Event event, sf::RenderWindow &window) override;
+        void render(sf::RenderWindow &window) override;
     };
 }

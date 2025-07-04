@@ -11,6 +11,7 @@ namespace mine_core
         //I need this field to make sure that assigned texture will stay with sprite
         sf::Texture _texture;
     public:
+        SpriteObject* parent;
         //Don't redefine constructors and destructors, too dangerous
         //SpriteObject();
         //~SpriteObject();

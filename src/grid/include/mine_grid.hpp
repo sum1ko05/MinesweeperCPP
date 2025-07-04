@@ -8,7 +8,7 @@
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
 namespace mine_grid
 {
-    class Grid : public mine_core::SpriteObject
+    class MineGrid : public mine_core::SpriteObject
     {
     private:
         std::vector<std::vector<std::unique_ptr<mine_grid::Cell>>> _grid;
@@ -18,8 +18,8 @@ namespace mine_grid
         void reset_cells();
         unsigned short get_neighbor_mines(ushort mine_x, ushort mine_y);
     public:
-        Grid(unsigned short gridWidth, unsigned short gridHeight);
-        ~Grid();
+        MineGrid(unsigned short gridWidth, unsigned short gridHeight);
+        ~MineGrid();
 
         void setTexture(const sf::Texture &texture, bool resetRect = false);
         void call_parent_func(std::string func, sf::Vector2i auto_open_arg = sf::Vector2i(0,0)) override;

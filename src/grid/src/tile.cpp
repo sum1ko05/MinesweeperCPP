@@ -1,26 +1,23 @@
-#include "grid/include/cell.hpp"
+#include "grid/include/tile.hpp"
 #include <SFML/Graphics.hpp>
 #include "core/include/object.hpp"
-#include "grid/include/tile.hpp"
 #define ushort unsigned short
 #define cell_size 32
 
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
 namespace mine_grid
 {
-    
-    Cell::Cell(const sf::Vector2i &grid_position):Tile(grid_position)
+    Tile::Tile(const sf::Vector2i &grid_position)
     {
-        //_grid_position = grid_position;
+        _grid_position = grid_position;
     }
-     //:Tile(grid_position)
-    
-    Cell::~Cell()
+    Tile::~Tile()
     {
 
     }
-    
-    sf::IntRect Cell::getTextureCut()
+
+    /*
+    sf::IntRect Tile::getTextureCut()
     {
         if(_is_opened && !_has_mine)
         {
@@ -52,20 +49,20 @@ namespace mine_grid
         }
     }
 
-    bool Cell::get_mine()
+    bool Tile::get_mine()
     {
         return _has_mine;
     }
-    void Cell::set_mine(bool has_mine)
+    void Tile::set_mine(bool has_mine)
     {
         _has_mine = has_mine;
     }
-    void Cell::end_game()
+    void Tile::end_game()
     {
         _game_ended = true;
     }
 
-    void Cell::open_cell()
+    void Tile::open_cell()
     {
         if(!_is_opened)
         {
@@ -73,17 +70,20 @@ namespace mine_grid
             {
                 _is_opened = true;
                 if(_has_mine) parent -> call_parent_func("end_game");
-                else if(neighbor_mines == 0) parent -> call_parent_func("auto_open", getGridPosition());
+                else if(neighbor_mines == 0) parent -> call_parent_func("auto_open", _grid_position);
             }
         }
     }
-    void Cell::flag_cell()
+    void Tile::flag_cell()
     {
         _is_flagged = !_is_flagged;
     }
+    */
 
-    void Cell::handleEvent(sf::Event event, sf::RenderWindow &window)
+    /*
+    void Tile::handleEvent(sf::Event event, sf::RenderWindow &window)
     {
+        
         sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
         if(getGlobalBounds().contains(mouse_pos.x, mouse_pos.y))
         {
@@ -102,12 +102,12 @@ namespace mine_grid
                 }
             }
         }
+        
     }
-    /*
-    void Cell::render(sf::RenderWindow &window)
+    */
+    void Tile::render(sf::RenderWindow &window)
     {
         setTextureRect(getTextureCut());
         window.draw(*this);
     }
-    */
 }

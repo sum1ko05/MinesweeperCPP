@@ -1,6 +1,7 @@
-#include "grid/include/grid.hpp"
+#include "grid/include/mine_grid.hpp"
 #include <SFML/Graphics.hpp>
 #include "core/include/object.hpp"
+#include "grid/include/tile_grid.hpp"
 #include "grid/include/cell.hpp"
 #define ushort unsigned short
 #define cell_size 32.f
@@ -9,7 +10,7 @@
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
 namespace mine_grid
 {
-    Grid::Grid(ushort gridWidth, ushort gridHeight)
+    MineGrid::MineGrid(ushort gridWidth, ushort gridHeight)
     {
         for(ushort i = 0; i < gridWidth; i++)
         {
@@ -26,12 +27,12 @@ namespace mine_grid
         _grid_height = gridHeight;
         _grid_width = gridWidth;
     }
-    Grid::~Grid()
+    MineGrid::~MineGrid()
     {
 
     }
 
-    void Grid::reset_cells()
+    void MineGrid::reset_cells()
     {
         for(ushort i = 0; i < _grid.size(); i++)
         {
@@ -42,7 +43,7 @@ namespace mine_grid
         }
     }
 
-    void Grid::setTexture(const sf::Texture &texture, bool resetRect)
+    void MineGrid::setTexture(const sf::Texture &texture, bool resetRect)
     {
         _texture = texture;
         for(ushort i = 0; i < _grid.size(); i++)
@@ -53,13 +54,13 @@ namespace mine_grid
             }
         }
     }
-    void Grid::call_parent_func(std::string func, sf::Vector2i auto_open_arg)
+    void MineGrid::call_parent_func(std::string func, sf::Vector2i auto_open_arg)
     {
         if(func == "end_game") end_game();
         if(func == "auto_open") auto_open(auto_open_arg.x, auto_open_arg.y);
     }
 
-    ushort Grid::get_neighbor_mines(ushort mine_x, ushort mine_y)
+    ushort MineGrid::get_neighbor_mines(ushort mine_x, ushort mine_y)
     {
         ushort result = 0;
         if(mine_x > 0 && mine_y > 0)
@@ -97,7 +98,7 @@ namespace mine_grid
         return result;
     }
 
-    void Grid::game_setup(int mine_amount)
+    void MineGrid::game_setup(int mine_amount)
     {
         srand(time(0));
         reset_cells();
@@ -125,7 +126,7 @@ namespace mine_grid
             }
         }
     }
-    void Grid::end_game()
+    void MineGrid::end_game()
     {
         for(ushort i = 0; i < _grid.size(); i++)
         {
@@ -135,7 +136,7 @@ namespace mine_grid
             }
         }
     }
-    void Grid::auto_open(ushort cell_x, ushort cell_y)
+    void MineGrid::auto_open(ushort cell_x, ushort cell_y)
     {
         if(cell_x > 0 && cell_y > 0)
         {
@@ -171,7 +172,7 @@ namespace mine_grid
         }
     }
 
-    void Grid::handleEvent(sf::Event event, sf::RenderWindow &window)
+    void MineGrid::handleEvent(sf::Event event, sf::RenderWindow &window)
     {
         if(event.type == sf::Event::MouseButtonReleased || event.type == sf::Event::MouseButtonPressed)
         {
@@ -185,7 +186,7 @@ namespace mine_grid
         }
     }
 
-    void Grid::render(sf::RenderWindow &window)
+    void MineGrid::render(sf::RenderWindow &window)
     {
         sf::Vector2f pivot = getPosition();
         for(ushort i = 0; i < _grid.size(); i++)
