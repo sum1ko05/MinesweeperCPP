@@ -16,13 +16,14 @@ namespace mine_grid
     public:
         //ushort neighbor_mines;
         sf::Vector2i tileTexturePosition;
+        sf::Vector2i tileSize;
     protected:
-        virtual sf::IntRect getTextureCut(){return sf::IntRect(tileTexturePosition.x*cell_size_f,
-                                                               tileTexturePosition.y*cell_size_f,
-                                                               cell_size_f, cell_size_f);}
+        virtual sf::IntRect getTextureCut(){return sf::IntRect(tileTexturePosition.x*tileSize.x,
+                                                               tileTexturePosition.y*tileSize.y,
+                                                               tileSize.x, tileSize.y);}
         //bool is_mouse_inside();
     public:
-        Tile(const sf::Vector2i &grid_position);
+        Tile(const sf::Vector2i &grid_position, const sf::Vector2i &tile_size=sf::Vector2i(32,32));
         ~Tile();
 
         const sf::Vector2i& getGridPosition()

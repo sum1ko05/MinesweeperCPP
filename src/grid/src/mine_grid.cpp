@@ -11,7 +11,7 @@
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
 namespace mine_grid
 {
-    MineGrid::MineGrid(ushort gridWidth, ushort gridHeight)
+    MineGrid::MineGrid(ushort gridWidth, ushort gridHeight, int mine_amount)
     {
         for(ushort i = 0; i < gridWidth; i++)
         {
@@ -27,6 +27,7 @@ namespace mine_grid
         }
         _grid_height = gridHeight;
         _grid_width = gridWidth;
+        _mine_amount = mine_amount;
     }
     MineGrid::~MineGrid()
     {
@@ -59,11 +60,14 @@ namespace mine_grid
     {
         if(func == "end_game") end_game(auto_open_arg.x);
         if(func == "game_start") game_start(auto_open_arg.x, auto_open_arg.y);
+
         if(func == "zero_auto_open") zero_auto_open(auto_open_arg.x, auto_open_arg.y);
         if(func == "flag_auto_open") flag_auto_open(auto_open_arg.x, auto_open_arg.y);
+
         if(func == "on_cell_opened") on_cell_opened();
+
         if(func == "set_mouse_holding") set_mouse_holding(auto_open_arg.x == 0 ? false : true);
-        if(func == "reset_game") game_setup(25);
+        if(func == "reset_game") game_setup(_mine_amount);
     }
 
     ushort MineGrid::get_neighbor_mines(ushort mine_x, ushort mine_y)
@@ -145,13 +149,17 @@ namespace mine_grid
     {
         srand(time(0));
         reset_cells();
+        time_passed = 0;
         _mine_amount = mine_amount;
         cells_remaining = (_grid_height * _grid_width) - mine_amount;
+        free_cells_display -> setValue(cells_remaining);
+        _game_started = false;
         game_lost = false;
         game_won = false;
     }
     void MineGrid::game_start(ushort init_x, ushort init_y)
     {
+        _game_started = true;
         for(int i = 0; i < _mine_amount; i++)
         {
             while(true)
@@ -246,6 +254,7 @@ namespace mine_grid
     void MineGrid::on_cell_opened()
     {
         cells_remaining--;
+        free_cells_display -> setValue(cells_remaining);
         if(cells_remaining <= 0) end_game(5);
     }
 

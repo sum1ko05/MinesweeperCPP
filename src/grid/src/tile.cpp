@@ -7,9 +7,10 @@
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
 namespace mine_grid
 {
-    Tile::Tile(const sf::Vector2i &grid_position)
+    Tile::Tile(const sf::Vector2i &grid_position, const sf::Vector2i &tile_size)
     {
         _grid_position = grid_position;
+        tileSize = tile_size;
     }
     Tile::~Tile()
     {

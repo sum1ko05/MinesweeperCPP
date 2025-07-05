@@ -16,22 +16,18 @@ namespace mine_grid
         ushort _grid_height;
 
         sf::Vector2i setBorderState(ushort width, ushort height, ushort x, ushort y);
-        //void reset_cells();
-        //unsigned short get_neighbor_mines(ushort mine_x, ushort mine_y);
     public:
-        TileGrid(ushort gridWidth, ushort gridHeight);
+        TileGrid(ushort gridWidth, ushort gridHeight, const sf::Vector2i &tile_size=sf::Vector2i(32,32));
         ~TileGrid();
 
         const ushort getWidth(){return _grid_width;}
         const ushort getHeight(){return _grid_height;}
+        Tile* getTile(ushort x, ushort y)
+        {
+            return _grid[x][y].get();
+        }
 
         void setTexture(const sf::Texture &texture, bool resetRect = false);
-        //void call_parent_func(std::string func, sf::Vector2i auto_open_arg = sf::Vector2i(0,0)) override;
-
-
-        //void game_setup(int mine_amount);
-        //void end_game();
-        //void auto_open(ushort cell_x, ushort cell_y);
 
         //void handleEvent(sf::Event event, sf::RenderWindow &window) override;
         void render(sf::RenderWindow &window) override;

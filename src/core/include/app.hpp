@@ -20,7 +20,7 @@ namespace mine_core
     private:
         void ready();
         void handle_events();
-        void update();
+        void update(float deltatime);
         void render();
     };
 }

@@ -9,7 +9,7 @@
 //Namespace for everything with grid. It's Minesweeper specific, so copy with caution.
 namespace mine_grid
 {
-    TileGrid::TileGrid(ushort gridWidth, ushort gridHeight)
+    TileGrid::TileGrid(ushort gridWidth, ushort gridHeight, const sf::Vector2i &tile_size)
     {
         for(ushort i = 0; i < gridWidth; i++)
         {
@@ -18,6 +18,7 @@ namespace mine_grid
             {
                 sf::Vector2i new_pos(i, j);
                 std::unique_ptr<Tile> new_tile = std::make_unique<Tile>(new_pos);
+                new_tile -> tileSize = tile_size;
                 new_tile -> parent = this;
                 new_tile -> tileTexturePosition = setBorderState(gridWidth, gridHeight, i, j);
                 column.push_back(std::move(new_tile));
@@ -77,7 +78,8 @@ namespace mine_grid
         {
             for(ushort j = 0; j < _grid[i].size(); j++)
             {
-                sf::Vector2f cell_pos = pivot + (static_cast<sf::Vector2f>(_grid[i][j] -> getGridPosition()) * cell_size_f);
+                sf::Vector2f cell_pos = pivot + sf::Vector2f((_grid[i][j] -> getGridPosition().x) * (_grid[i][j] -> tileSize.x),
+                                                             (_grid[i][j] -> getGridPosition().y) * (_grid[i][j] -> tileSize.y));
                 _grid[i][j] -> setPosition(cell_pos);
                 _grid[i][j] -> render(window);
             }

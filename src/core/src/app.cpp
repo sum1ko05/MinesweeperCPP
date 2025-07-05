@@ -3,6 +3,7 @@
 #include "core/include/object.hpp"
 #include "grid/include/tile_grid.hpp"
 #include "grid/include/mine_grid.hpp"
+#include "grid/include/digit_display.hpp"
 #include "other/include/button.hpp"
 #include "other/include/emoji.hpp"
 #include <iostream>
@@ -15,6 +16,8 @@ namespace mine_core
     {
         _screenWidth = screenWidth;
         _screenHeight = screenHeight;
+        //Trying to optimise the app
+        window.setFramerateLimit(15);
     }
 
     App::~App()
@@ -49,7 +52,7 @@ namespace mine_core
 
         sf::Texture cell_texture;
         cell_texture.loadFromFile("../assets/tiles.png");
-        std::unique_ptr<mine_grid::MineGrid> grid = std::make_unique<mine_grid::MineGrid>(grid_size.x,grid_size.y);
+        std::unique_ptr<mine_grid::MineGrid> grid = std::make_unique<mine_grid::MineGrid>(grid_size.x,grid_size.y,35);
         grid -> setTexture(cell_texture);
         //Centering the grid
         sf::Vector2f mainSectionCenter(_screenWidth / 2, 
@@ -66,13 +69,28 @@ namespace mine_core
         emoji -> setTexture(emoji_texture);
         emoji -> setPosition(emoji_pos);
 
+        sf::Texture digits_texture;
+        digits_texture.loadFromFile("../assets/digits.png");
+        std::unique_ptr<mine_grid::DigitDisplay> time_display = std::make_unique<mine_grid::DigitDisplay>(3);
+        std::unique_ptr<mine_grid::DigitDisplay> free_cells_display = std::make_unique<mine_grid::DigitDisplay>(3);
+        time_display -> setTexture(digits_texture);
+        free_cells_display -> setTexture(digits_texture);
+        time_display -> setPosition(sf::Vector2f(emoji_pos.x + 64, emoji_pos.y));
+        free_cells_display -> setPosition(sf::Vector2f(emoji_pos.x - 64 - 32, emoji_pos.y));
+        //time_display -> setValue(25);
+
         button -> parent = grid.get();
         grid -> emoji = emoji.get();
+        grid -> time_display = time_display.get();
+        grid -> free_cells_display = free_cells_display.get();
 
         border -> setPosition(borderPos);
         grid -> setPosition(gridPos);
         grid -> game_setup(25);
+
         objects.push_back(std::move(button));
+        objects.push_back(std::move(time_display));
+        objects.push_back(std::move(free_cells_display));
         objects.push_back(std::move(emoji));
         objects.push_back(std::move(border));
         objects.push_back(std::move(grid));
@@ -93,11 +111,11 @@ namespace mine_core
         }
     }
 
-    void App::update()
+    void App::update(float deltatime)
     {
         for (auto& obj : objects){
             //No clock needed yet
-            obj->update(0.f);
+            obj->update(deltatime);
         }
     }
 
@@ -116,10 +134,15 @@ namespace mine_core
     
     void App::run()
     {
+        sf::Clock clock;
+        float deltatime = 0;
         ready();
         while (window.isOpen()) {
+            deltatime = clock.restart().asSeconds();
+            //clock.restart();
+
             handle_events();
-            update();
+            update(deltatime);
             render();
         }
     }
