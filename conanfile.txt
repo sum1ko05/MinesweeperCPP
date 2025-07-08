@@ -1,5 +1,7 @@
 [requires]
 sfml/2.6.2
+dice_lib/1.0.0@sum1ko05
+
 [generators]
 CMakeDeps
 CMakeToolchain

@@ -15,14 +15,7 @@ endif()
 include("${CMAKE_BINARY_DIR}/conan_toolchain.cmake")
 
 # -------------------------------------------------------------- #
-#[[
-set(SRC 
-    src/core/src/app.cpp
-    src/grid/src/mine_grid.cpp
-    src/grid/src/cell.cpp
-    src/grid/src/tile_grid.cpp
-    src/grid/src/tile.cpp
-    src/other/src/)]]
+option(INCLUDE_DICE_LIB "Include lib that you could get only through private server" Off)
 
 file(GLOB_RECURSE SRC CONFIGURE_DEPENDS "src/*.cpp")
 
@@ -34,11 +27,28 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-# Just find SFML after executing Conan
-find_package(SFML REQUIRED COMPONENTS graphics window system)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
-    sfml-graphics
-    sfml-window
-    sfml-system)
+# Just find SFML (and DiceLib prob) after executing Conan
+if(INCUDE_DICE_LIB)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE INCUDE_DICE_LIB)
+
+    find_package(SFML REQUIRED COMPONENTS graphics window system)
+    find_package(dice_lib REQUIRED)
+    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
+        sfml-graphics
+        sfml-window
+        sfml-system
+        dice_lib::dice_lib
+)
+else()
+    find_package(SFML REQUIRED COMPONENTS graphics window system)
+    #find_package(dice_lib REQUIRED)
+    target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE
+        sfml-graphics
+        sfml-window
+        sfml-system
+        #dice_lib::dice_lib
+)
+endif()
+
 
 file(COPY assets/ DESTINATION ${CMAKE_BINARY_DIR}/assets)
